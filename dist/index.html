@@ -1,0 +1,464 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Screenshot Tool</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.5);
+        animation: fadeIn 0.2s ease-in;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        animation: slideIn 0.3s ease-out;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-10px);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-50 min-h-screen">
+    <!-- Main Container with more padding for breathing space -->
+    <div class="max-w-xl mx-auto p-8 space-y-10">
+      <!-- Simplified Header -->
+      <header class="text-center py-6">
+        <h1 class="text-2xl font-medium text-gray-700">Web Screenshot</h1>
+        <p class="text-sm text-gray-500 mt-2">Capture the web!</p>
+      </header>
+
+      <!-- Main Form - lighter shadow, more rounded corners -->
+      <form
+        id="screenshotForm"
+        class="bg-white rounded-xl shadow-sm p-6 space-y-6"
+      >
+        <!-- URL Input - reduced height -->
+        <div class="space-y-2">
+          <label for="url" class="block text-sm text-gray-600"
+            >Website URL</label
+          >
+          <input
+            type="url"
+            name="url"
+            id="url"
+            class="block w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+            placeholder="https://example.com"
+            required
+          />
+        </div>
+
+        <!-- Device Selection - simplified design -->
+        <div class="space-y-3">
+          <label class="block text-sm text-gray-600">Device</label>
+          <div class="grid grid-cols-3 gap-3">
+            <!-- Desktop Option -->
+            <label
+              class="relative flex items-center justify-center py-2 px-3 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              <input
+                type="radio"
+                name="device"
+                value="desktop"
+                class="sr-only"
+                checked
+              />
+              <div class="space-y-1 text-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mx-auto text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                  />
+                </svg>
+                <span class="block text-xs text-gray-600">Desktop</span>
+              </div>
+            </label>
+
+            <!-- Tablet Option -->
+            <label
+              class="relative flex items-center justify-center py-2 px-3 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              <input
+                type="radio"
+                name="device"
+                value="tablet"
+                class="sr-only"
+              />
+              <div class="space-y-1 text-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mx-auto text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+                <span class="block text-xs text-gray-600">Tablet</span>
+              </div>
+            </label>
+
+            <!-- Mobile Option -->
+            <label
+              class="relative flex items-center justify-center py-2 px-3 border border-gray-200 rounded-md cursor-pointer hover:bg-gray-50 transition-colors"
+            >
+              <input
+                type="radio"
+                name="device"
+                value="mobile"
+                class="sr-only"
+              />
+              <div class="space-y-1 text-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 mx-auto text-gray-500"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                    d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                  />
+                </svg>
+                <span class="block text-xs text-gray-600">Mobile</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <label class="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            name="full-page"
+            id="full-page"
+          />
+          <span class="text-xs text-gray-600">Full page</span>
+        </label>
+
+        <!-- Advanced Options - simplified -->
+        <div class="space-y-3">
+          <button
+            type="button"
+            class="flex items-center text-xs text-gray-500 hover:text-gray-700 transition-colors"
+            onclick="document.getElementById('advanced-options').classList.toggle('hidden')"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-3 w-3 mr-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+            Advanced
+          </button>
+
+          <div id="advanced-options" class="hidden space-y-2">
+            <label for="user-agent" class="block text-xs text-gray-600"
+              >User Agent</label
+            >
+            <textarea
+              rows="3"
+              id="user-agent"
+              name="user-agent"
+              class="block w-full px-3 py-2 text-sm border border-gray-200 rounded-md focus:ring-1 focus:ring-blue-400 focus:border-blue-400 transition-colors"
+              placeholder="Mozilla/5.0..."
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Capture Button -->
+        <button
+          type="submit"
+          id="captureButton"
+          class="w-full py-2 px-4 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400"
+        >
+          <span id="buttonText">Capture</span>
+          <span id="buttonLoading" class="hidden">
+            <svg
+              class="animate-spin h-4 w-4 text-white inline"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            Processing...
+          </span>
+        </button>
+      </form>
+
+      <!-- Result Modal -->
+      <div id="resultModal" class="hidden fixed inset-0 z-50">
+        <div class="modal-backdrop fixed inset-0"></div>
+        <div class="fixed inset-0 overflow-y-auto">
+          <div class="flex min-h-full items-center justify-center p-4">
+            <div
+              class="modal-content relative bg-white rounded-xl shadow-lg max-w-2xl w-full p-6 space-y-6"
+            >
+              <!-- Close button -->
+              <button
+                onclick="closeModal()"
+                class="absolute top-4 right-4 text-gray-400 hover:text-gray-500"
+              >
+                <svg
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+
+              <!-- Modal content -->
+              <div class="space-y-6">
+                <!-- Error message -->
+                <div
+                  id="errorMessage"
+                  class="hidden rounded-md bg-red-50 p-4 text-sm text-red-500"
+                ></div>
+
+                <!-- Screenshot results -->
+                <div id="screenshotResults" class="hidden space-y-6">
+                  <div class="space-y-4">
+                    <img
+                      id="screenshotPreview"
+                      class="w-full rounded-lg border border-gray-200 max-w-xl"
+                      alt="Screenshot preview"
+                    />
+                    <a
+                      id="downloadButton"
+                      class="inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition-colors"
+                      download
+                    >
+                      <svg
+                        class="h-4 w-4 mr-2"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                        />
+                      </svg>
+                      Download Screenshot
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const form = document.getElementById("screenshotForm");
+      const modal = document.getElementById("resultModal");
+      const errorMessage = document.getElementById("errorMessage");
+      const screenshotResults = document.getElementById("screenshotResults");
+      const captureButton = document.getElementById("captureButton");
+      const buttonText = document.getElementById("buttonText");
+      const buttonLoading = document.getElementById("buttonLoading");
+
+      const DEVICES_UA = {
+        desktop:
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_7_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36",
+        tablet:
+          "Mozilla/5.0 (iPad; CPU OS 17_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.120 Mobile/15E148 Safari/604.1",
+        mobile:
+          "Mozilla/5.0 (iPhone; CPU iPhone OS 17_7_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/133.0.6943.120 Mobile/15E148 Safari/604.1",
+      };
+
+      // Add active states to device selection
+      document.querySelectorAll('input[name="device"]').forEach((input) => {
+        input.addEventListener("change", (e) => {
+          document.querySelectorAll('input[name="device"]').forEach((radio) => {
+            radio.parentElement.classList.remove(
+              "border-blue-400",
+              "bg-blue-50"
+            );
+          });
+          if (e.target.checked) {
+            e.target.parentElement.classList.add(
+              "border-blue-400",
+              "bg-blue-50"
+            );
+          }
+
+          const device = e.target.value;
+          const userAgent = DEVICES_UA[device];
+          document.getElementById("user-agent").value = userAgent;
+        });
+      });
+
+      // Set default UA
+      document.querySelector('input[name="device"][value="desktop"]').click();
+      document.getElementById("user-agent").value = DEVICES_UA.desktop;
+
+      function showLoading() {
+        buttonText.classList.add("hidden");
+        buttonLoading.classList.remove("hidden");
+        captureButton.disabled = true;
+      }
+
+      function hideLoading() {
+        buttonText.classList.remove("hidden");
+        buttonLoading.classList.add("hidden");
+        captureButton.disabled = false;
+      }
+
+      function showModal() {
+        modal.classList.remove("hidden");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeModal() {
+        modal.classList.add("hidden");
+        document.body.style.overflow = "auto";
+        errorMessage.classList.add("hidden");
+        screenshotResults.classList.add("hidden");
+      }
+
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorMessage.classList.remove("hidden");
+        screenshotResults.classList.add("hidden");
+      }
+
+      function showResults(screenshotUrl) {
+        const preview = document.getElementById("screenshotPreview");
+        const downloadButton = document.getElementById("downloadButton");
+
+        preview.src = screenshotUrl;
+        downloadButton.href = screenshotUrl;
+
+        errorMessage.classList.add("hidden");
+        screenshotResults.classList.remove("hidden");
+      }
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        showLoading();
+
+        const formData = new FormData(form);
+        const data = {
+          url: formData.get("url"),
+          device: formData.get("device"),
+          userAgent: formData.get("user-agent"),
+          fullPage: formData.get("full-page") === "on",
+        };
+
+        try {
+          // Replace with your actual API endpoint
+          const response = await fetch("/capture", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (!response.ok) {
+            throw new Error(result.message || "Failed to capture screenshot");
+          }
+
+          if (result.success && result.screenshot_url) {
+            showResults(result.screenshot_url);
+          } else {
+            throw new Error("Invalid response from server");
+          }
+        } catch (error) {
+          showError(error.message || "An unexpected error occurred");
+        } finally {
+          hideLoading();
+          showModal();
+        }
+      });
+
+      // Close modal when clicking outside
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      // Close modal on escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeModal();
+        }
+      });
+    </script>
+  </body>
+</html>
